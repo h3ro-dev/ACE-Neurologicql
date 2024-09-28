@@ -1,0 +1,803 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Enhanced ACEs Impact on Brain Development Assessment</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://fonts.googleapis.com/css?family=SF+Pro+Display:400,600&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'SF Pro Display', sans-serif;
+            margin: 0;
+            background: #f5f5f7;
+            color: #1d1d1f;
+        }
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        h1, h2 {
+            font-weight: 600;
+            text-align: center;
+        }
+        h1 {
+            margin-top: 40px;
+            font-size: 32px;
+        }
+        h2 {
+            font-size: 24px;
+            margin-bottom: 30px;
+        }
+        label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+        input[type="text"], select {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #d2d2d7;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            background: #fff;
+            font-size: 16px;
+        }
+        input[type="radio"], input[type="checkbox"] {
+            margin-right: 10px;
+        }
+        .button {
+            display: inline-block;
+            background: #007aff;
+            color: #fff;
+            padding: 14px 28px;
+            text-align: center;
+            border-radius: 12px;
+            text-decoration: none;
+            font-size: 16px;
+            font-weight: 600;
+            margin: 10px 0;
+            cursor: pointer;
+        }
+        .button:disabled {
+            background: #a1a1aa;
+            cursor: default;
+        }
+        .question {
+            margin-bottom: 30px;
+        }
+        .hidden {
+            display: none;
+        }
+        .progress-bar {
+            height: 4px;
+            background: #e0e0e0;
+            border-radius: 2px;
+            overflow: hidden;
+            margin-bottom: 20px;
+        }
+        .progress {
+            height: 4px;
+            background: #007aff;
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+        .report {
+            background: #fff;
+            padding: 20px;
+            border-radius: 12px;
+            margin-top: 20px;
+        }
+        .report h3 {
+            font-size: 20px;
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+        .region, .system, .interpretation, .superpowers {
+            margin-bottom: 20px;
+        }
+        .region h4, .system h4, .interpretation h4, .superpowers h4 {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+        .note {
+            font-size: 14px;
+            color: #6e6e73;
+            margin-top: 20px;
+        }
+        .logo {
+            display: block;
+            margin: 40px auto;
+            width: 60px;
+            height: 60px;
+        }
+        .age-option {
+            margin-bottom: 20px;
+        }
+        .age-option label {
+            font-weight: 600;
+            display: block;
+            margin-bottom: 5px;
+        }
+        .freq-sev {
+            margin-left: 20px;
+            margin-top: 10px;
+        }
+        .freq-sev label {
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+        .freq-sev select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #d2d2d7;
+            border-radius: 12px;
+            margin-bottom: 10px;
+            background: #fff;
+            font-size: 16px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <svg class="logo" viewBox="0 0 100 100">
+            <path d="M50 10c-15 0-28 13-28 28s13 28 28 28 28-13 28-28S65 10 50 10z" fill="#007aff"/>
+        </svg>
+        <h1>ACEs Brain Impact Assessment</h1>
+        <h2>Understand how experiences shape development</h2>
+        <div class="progress-bar">
+            <div class="progress"></div>
+        </div>
+        <form id="assessmentForm">
+            <div id="step1" class="question">
+                <label for="gender">Biological Sex Assigned at Birth:</label>
+                <select id="gender" required>
+                    <option value="" disabled selected>Select your option</option>
+                    <option value="male">Male</option>
+                    <option value="female">Female</option>
+                </select>
+                <button type="button" class="button" onclick="nextStep()">Next</button>
+            </div>
+            <div id="step2" class="question hidden">
+                <label>Trauma Types Experienced:</label>
+                <div id="traumaTypes"></div>
+                <button type="button" class="button" onclick="processTraumaSelection()" style="float: right;">Next</button>
+            </div>
+            <div id="step3" class="question hidden">
+                <label>Protective Factors:</label>
+                <label><input type="checkbox" id="supportiveAdult"> Had a supportive adult or mentor</label>
+                <label><input type="checkbox" id="therapy"> Received counseling or therapy</label>
+                <label><input type="checkbox" id="copingSkills"> Engage in activities that help cope with stress</label>
+                <button type="button" class="button" onclick="generateReport()">Generate Report</button>
+            </div>
+        </form>
+        <div id="report" class="report hidden"></div>
+        <p class="note">Note: This assessment is for educational purposes and is not a diagnosis. Please consult a healthcare professional for personalized advice.</p>
+    </div>
+    <script>
+        // Trauma types mapped to brain regions affected by age and gender
+        const traumaBrainRegions = {
+            'bullying': {
+                'male': {
+                    '6-8': ['prefrontal_cortex', 'amygdala'],
+                    '9-12': ['prefrontal_cortex', 'hippocampus'],
+                    '13-15': ['prefrontal_cortex', 'striatum'],
+                    '16-18': ['prefrontal_cortex', 'default_mode_network']
+                },
+                'female': {
+                    '6-8': ['prefrontal_cortex', 'amygdala'],
+                    '9-12': ['prefrontal_cortex', 'hippocampus'],
+                    '13-15': ['prefrontal_cortex', 'striatum'],
+                    '16-18': ['prefrontal_cortex', 'default_mode_network']
+                }
+            },
+            'community_violence': {
+                'male': {
+                    '0-2': ['amygdala', 'hypothalamus'],
+                    '3-5': ['amygdala', 'brainstem'],
+                    '6-8': ['prefrontal_cortex', 'amygdala'],
+                    '9-12': ['prefrontal_cortex', 'hippocampus'],
+                    '13-15': ['prefrontal_cortex', 'striatum'],
+                    '16-18': ['prefrontal_cortex', 'default_mode_network']
+                },
+                'female': {
+                    '0-2': ['amygdala', 'hypothalamus'],
+                    '3-5': ['amygdala', 'brainstem'],
+                    '6-8': ['prefrontal_cortex', 'amygdala'],
+                    '9-12': ['prefrontal_cortex', 'hippocampus'],
+                    '13-15': ['prefrontal_cortex', 'striatum'],
+                    '16-18': ['prefrontal_cortex', 'default_mode_network']
+                }
+            },
+            'natural_disaster': {
+                'male': {
+                    '0-2': ['amygdala', 'hpa_axis'],
+                    '3-5': ['hippocampus', 'hpa_axis'],
+                    '6-8': ['prefrontal_cortex', 'hpa_axis'],
+                    '9-12': ['prefrontal_cortex', 'hippocampus'],
+                    '13-15': ['prefrontal_cortex', 'default_mode_network'],
+                    '16-18': ['prefrontal_cortex', 'default_mode_network']
+                },
+                'female': {
+                    '0-2': ['amygdala', 'hpa_axis'],
+                    '3-5': ['hippocampus', 'hpa_axis'],
+                    '6-8': ['prefrontal_cortex', 'hpa_axis'],
+                    '9-12': ['prefrontal_cortex', 'hippocampus'],
+                    '13-15': ['prefrontal_cortex', 'default_mode_network'],
+                    '16-18': ['prefrontal_cortex', 'default_mode_network']
+                }
+            },
+            'chronic_illness': {
+                'male': {
+                    '0-2': ['brainstem', 'hypothalamus'],
+                    '3-5': ['hippocampus', 'amygdala'],
+                    '6-8': ['prefrontal_cortex', 'anterior_cingulate_cortex'],
+                    '9-12': ['prefrontal_cortex', 'insula'],
+                    '13-15': ['prefrontal_cortex', 'striatum'],
+                    '16-18': ['prefrontal_cortex']
+                },
+                'female': {
+                    '0-2': ['brainstem', 'hypothalamus'],
+                    '3-5': ['hippocampus', 'amygdala'],
+                    '6-8': ['prefrontal_cortex', 'anterior_cingulate_cortex'],
+                    '9-12': ['prefrontal_cortex', 'insula'],
+                    '13-15': ['prefrontal_cortex', 'striatum'],
+                    '16-18': ['prefrontal_cortex']
+                }
+            },
+            'emotional_abuse': {
+                'male': {
+                    '0-2': ['amygdala', 'prefrontal_cortex'],
+                    '3-5': ['hippocampus'],
+                    '6-8': ['anterior_cingulate_cortex'],
+                    '9-12': ['insula'],
+                    '13-15': ['prefrontal_cortex', 'ventromedial_prefrontal_cortex'],
+                    '16-18': ['prefrontal_cortex', 'ventromedial_prefrontal_cortex']
+                },
+                'female': {
+                    '0-2': ['amygdala', 'prefrontal_cortex'],
+                    '3-5': ['hippocampus'],
+                    '6-8': ['anterior_cingulate_cortex'],
+                    '9-12': ['insula'],
+                    '13-15': ['prefrontal_cortex', 'ventromedial_prefrontal_cortex'],
+                    '16-18': ['prefrontal_cortex', 'ventromedial_prefrontal_cortex']
+                }
+            },
+            'physical_abuse': {
+                'male': {
+                    '0-2': ['sensory_cortex', 'amygdala'],
+                    '3-5': ['cerebellum', 'amygdala'],
+                    '6-8': ['corpus_callosum'],
+                    '9-12': ['prefrontal_cortex', 'dorsolateral_prefrontal_cortex'],
+                    '13-15': ['prefrontal_cortex', 'orbitofrontal_cortex'],
+                    '16-18': ['prefrontal_cortex', 'orbitofrontal_cortex']
+                },
+                'female': {
+                    '0-2': ['sensory_cortex', 'amygdala'],
+                    '3-5': ['hippocampus', 'amygdala'],
+                    '6-8': ['corpus_callosum'],
+                    '9-12': ['prefrontal_cortex', 'dorsolateral_prefrontal_cortex'],
+                    '13-15': ['prefrontal_cortex', 'orbitofrontal_cortex'],
+                    '16-18': ['prefrontal_cortex', 'orbitofrontal_cortex']
+                }
+            },
+            'sexual_abuse': {
+                'male': {
+                    '0-2': ['amygdala', 'hippocampus'],
+                    '3-5': ['amygdala', 'hippocampus'],
+                    '6-8': ['prefrontal_cortex', 'amygdala'],
+                    '9-12': ['prefrontal_cortex', 'hippocampus'],
+                    '13-15': ['prefrontal_cortex', 'limbic_system', 'striatum'],
+                    '16-18': ['prefrontal_cortex', 'limbic_system', 'striatum']
+                },
+                'female': {
+                    '0-2': ['amygdala', 'hippocampus'],
+                    '3-5': ['amygdala', 'hippocampus'],
+                    '6-8': ['prefrontal_cortex', 'amygdala'],
+                    '9-12': ['prefrontal_cortex', 'hippocampus'],
+                    '13-15': ['prefrontal_cortex', 'limbic_system', 'striatum'],
+                    '16-18': ['prefrontal_cortex', 'limbic_system', 'striatum']
+                }
+            },
+            'emotional_neglect': {
+                'male': {
+                    '0-2': ['prefrontal_cortex', 'limbic_system'],
+                    '3-5': ['prefrontal_cortex', 'ventromedial_prefrontal_cortex'],
+                    '6-8': ['temporal_lobes'],
+                    '9-12': ['anterior_cingulate_cortex', 'insula'],
+                    '13-15': ['prefrontal_cortex', 'default_mode_network'],
+                    '16-18': ['prefrontal_cortex', 'default_mode_network']
+                },
+                'female': {
+                    '0-2': ['prefrontal_cortex', 'limbic_system'],
+                    '3-5': ['prefrontal_cortex', 'ventromedial_prefrontal_cortex'],
+                    '6-8': ['temporal_lobes'],
+                    '9-12': ['anterior_cingulate_cortex', 'insula'],
+                    '13-15': ['prefrontal_cortex', 'default_mode_network'],
+                    '16-18': ['prefrontal_cortex', 'default_mode_network']
+                }
+            },
+            'physical_neglect': {
+                'male': {
+                    '0-2': ['brainstem', 'hypothalamus'],
+                    '3-5': ['cerebellum', 'hypothalamus'],
+                    '6-8': ['prefrontal_cortex', 'corpus_callosum'],
+                    '9-12': ['prefrontal_cortex', 'insula'],
+                    '13-15': ['prefrontal_cortex', 'default_mode_network'],
+                    '16-18': ['prefrontal_cortex']
+                },
+                'female': {
+                    '0-2': ['brainstem', 'hypothalamus'],
+                    '3-5': ['cerebellum', 'hypothalamus'],
+                    '6-8': ['prefrontal_cortex', 'corpus_callosum'],
+                    '9-12': ['prefrontal_cortex', 'insula'],
+                    '13-15': ['prefrontal_cortex', 'default_mode_network'],
+                    '16-18': ['prefrontal_cortex']
+                }
+            },
+            'household_dysfunction': {
+                'male': {
+                    '0-2': ['amygdala'],
+                    '3-5': ['hippocampus'],
+                    '6-8': ['prefrontal_cortex'],
+                    '9-12': ['prefrontal_cortex'],
+                    '13-15': ['prefrontal_cortex'],
+                    '16-18': ['prefrontal_cortex']
+                },
+                'female': {
+                    '0-2': ['amygdala'],
+                    '3-5': ['hippocampus'],
+                    '6-8': ['prefrontal_cortex'],
+                    '9-12': ['prefrontal_cortex'],
+                    '13-15': ['prefrontal_cortex'],
+                    '16-18': ['prefrontal_cortex']
+                }
+            },
+            'substance_abuse_in_household': {
+                'male': {
+                    '0-2': ['hpa_axis', 'amygdala'],
+                    '3-5': ['prefrontal_cortex', 'hippocampus'],
+                    '6-8': ['ventromedial_prefrontal_cortex', 'striatum'],
+                    '9-12': ['dorsolateral_prefrontal_cortex', 'insula'],
+                    '13-15': ['orbitofrontal_cortex'],
+                    '16-18': ['prefrontal_cortex', 'default_mode_network']
+                },
+                'female': {
+                    '0-2': ['hpa_axis', 'amygdala'],
+                    '3-5': ['prefrontal_cortex', 'hippocampus'],
+                    '6-8': ['ventromedial_prefrontal_cortex', 'striatum'],
+                    '9-12': ['dorsolateral_prefrontal_cortex', 'insula'],
+                    '13-15': ['orbitofrontal_cortex'],
+                    '16-18': ['prefrontal_cortex', 'default_mode_network']
+                }
+            },
+            'loss_of_a_loved_one': {
+                'male': {
+                    '0-2': ['amygdala', 'hippocampus'],
+                    '3-5': ['hippocampus', 'limbic_system'],
+                    '6-8': ['prefrontal_cortex', 'insula'],
+                    '9-12': ['prefrontal_cortex', 'insula'],
+                    '13-15': ['prefrontal_cortex', 'default_mode_network'],
+                    '16-18': ['prefrontal_cortex']
+                },
+                'female': {
+                    '0-2': ['amygdala', 'hippocampus'],
+                    '3-5': ['hippocampus', 'limbic_system'],
+                    '6-8': ['prefrontal_cortex', 'insula'],
+                    '9-12': ['prefrontal_cortex', 'insula'],
+                    '13-15': ['prefrontal_cortex', 'default_mode_network'],
+                    '16-18': ['prefrontal_cortex']
+                }
+            },
+            'parental_separation_or_divorce': {
+                'male': {
+                    '0-2': ['amygdala', 'limbic_system'],
+                    '3-5': ['hippocampus', 'limbic_system'],
+                    '6-8': ['prefrontal_cortex', 'limbic_system'],
+                    '9-12': ['prefrontal_cortex'],
+                    '13-15': ['prefrontal_cortex', 'default_mode_network'],
+                    '16-18': ['prefrontal_cortex']
+                },
+                'female': {
+                    '0-2': ['amygdala', 'limbic_system'],
+                    '3-5': ['hippocampus', 'limbic_system'],
+                    '6-8': ['prefrontal_cortex', 'limbic_system'],
+                    '9-12': ['prefrontal_cortex'],
+                    '13-15': ['prefrontal_cortex', 'default_mode_network'],
+                    '16-18': ['prefrontal_cortex']
+                }
+            }
+        };
+
+        // Brain regions and their impacts
+        const brainRegionImpacts = {
+            'prefrontal_cortex': 'Difficulties with decision-making, impulse control, attention, and executive functions.',
+            'amygdala': 'Heightened fear responses, anxiety, emotional reactivity, and potential for mood disorders.',
+            'hippocampus': 'Impaired memory formation, difficulties with learning, and spatial navigation issues.',
+            'corpus_callosum': 'Disrupted communication between brain hemispheres affecting cognitive and motor functions.',
+            'cerebellum': 'Problems with coordination, balance, and fine motor skills; potential impacts on attention.',
+            'anterior_cingulate_cortex': 'Challenges with emotion regulation, decision-making, and empathy.',
+            'insula': 'Difficulties in emotional awareness, empathy, and perception of bodily states.',
+            'sensory_cortex': 'Increased sensitivity to sensory input, potential sensory processing disorders.',
+            'limbic_system': 'Issues with emotional processing, attachment, and stress responses.',
+            'temporal_lobes': 'Challenges with language, auditory processing, and emotional regulation.',
+            'orbitofrontal_cortex': 'Affects reward processing, decision-making, impulse control; alterations may lead to impulsivity and difficulties in evaluating consequences.',
+            'ventromedial_prefrontal_cortex': 'Involved in processing risk and fear, personal and social decision-making; changes can result in impaired judgment and increased anxiety.',
+            'dorsolateral_prefrontal_cortex': 'Key for working memory, cognitive flexibility, planning; dysfunction may cause problems with organizing tasks and adapting to new situations.',
+            'striatum': 'Impacts reward perception, motivation, habit formation; alterations can lead to addictive behaviors and reduced motivation.',
+            'thalamus': 'Relays sensory and motor signals, affects consciousness; disruptions may cause sensory processing issues and attention deficits.',
+            'hypothalamus': 'Regulates hormones, stress responses; dysregulation can lead to chronic stress, sleep disturbances, and appetite changes.',
+            'brainstem': 'Controls basic life functions; stress can affect sleep patterns, arousal levels, and autonomic functions.',
+            'default_mode_network': 'Associated with self-referential thought; alterations may cause difficulties with social cognition and increased rumination.',
+            'hpa_axis': 'Regulates stress responses; chronic activation can lead to hormonal imbalances and increased vulnerability to stress-related illnesses.'
+        };
+
+        // Mapping of brain regions to systems
+        const brainSystems = {
+            'Emotional Regulation System': ['amygdala', 'prefrontal_cortex', 'anterior_cingulate_cortex', 'ventromedial_prefrontal_cortex', 'limbic_system', 'orbitofrontal_cortex'],
+            'Memory System': ['hippocampus', 'prefrontal_cortex', 'temporal_lobes'],
+            'Stress Response System': ['hypothalamus', 'hpa_axis', 'amygdala', 'brainstem'],
+            'Executive Function System': ['prefrontal_cortex', 'dorsolateral_prefrontal_cortex', 'orbitofrontal_cortex', 'ventromedial_prefrontal_cortex', 'anterior_cingulate_cortex'],
+            'Reward System': ['striatum', 'orbitofrontal_cortex', 'prefrontal_cortex'],
+            'Sensory Processing System': ['sensory_cortex', 'insula', 'thalamus'],
+            'Motor Coordination System': ['cerebellum', 'basal_ganglia', 'motor_cortex'],
+            'Social Cognition System': ['default_mode_network', 'prefrontal_cortex', 'temporal_lobes'],
+            // Add other systems as needed
+        };
+
+        // System impacts including neurological and simplified descriptions
+        const systemImpacts = {
+            'Emotional Regulation System': {
+                'neurological_description': 'Alterations in the neural circuitry responsible for regulating emotions, leading to mood instability.',
+                'simple_description': 'You might experience strong emotions that are hard to control.',
+                'superpowers': ['Heightened emotional awareness', 'Deep empathy for others'],
+                'kryptonites': ['Difficulty managing emotions', 'Overwhelmed by stress']
+            },
+            'Memory System': {
+                'neurological_description': 'Changes in areas associated with memory formation and retrieval, affecting learning capabilities.',
+                'simple_description': 'You may find it challenging to remember things or learn new information.',
+                'superpowers': ['Creative thinking', 'Strong visual memory'],
+                'kryptonites': ['Forgetfulness', 'Learning difficulties']
+            },
+            'Stress Response System': {
+                'neurological_description': 'Hyperactivity in stress response pathways, resulting in heightened sensitivity to stress.',
+                'simple_description': 'You might feel stressed more easily than others.',
+                'superpowers': ['High alertness', 'Quick reactions'],
+                'kryptonites': ['Anxiety', 'Chronic stress']
+            },
+            'Executive Function System': {
+                'neurological_description': 'Impairments in executive functions like planning, decision-making, and impulse control.',
+                'simple_description': 'Organizing tasks and making decisions could be challenging.',
+                'superpowers': ['Adaptable thinking', 'Innovative problem-solving'],
+                'kryptonites': ['Impulsivity', 'Difficulty focusing']
+            },
+            'Reward System': {
+                'neurological_description': 'Altered reward processing mechanisms, impacting motivation and pleasure responses.',
+                'simple_description': 'You might seek rewards differently or have fluctuating motivation.',
+                'superpowers': ['Passionate pursuits', 'Strong drive when interested'],
+                'kryptonites': ['Risk-taking behaviors', 'Addictive tendencies']
+            },
+            'Sensory Processing System': {
+                'neurological_description': 'Changes in how sensory information is processed, leading to hypersensitivity or hyposensitivity.',
+                'simple_description': 'You might be more sensitive to sounds, sights, or textures.',
+                'superpowers': ['Heightened senses', 'Attention to detail'],
+                'kryptonites': ['Sensory overload', 'Discomfort in stimulating environments']
+            },
+            'Motor Coordination System': {
+                'neurological_description': 'Affecting motor skills and coordination due to changes in motor control areas.',
+                'simple_description': 'You may experience challenges with balance or coordination.',
+                'superpowers': ['Graceful movements', 'Strong mind-body connection'],
+                'kryptonites': ['Clumsiness', 'Difficulty with fine motor tasks']
+            },
+            'Social Cognition System': {
+                'neurological_description': 'Impacts on areas involved in understanding social cues and interactions.',
+                'simple_description': 'Interpreting social situations might be difficult.',
+                'superpowers': ['Unique perspectives', 'Ability to think deeply'],
+                'kryptonites': ['Social anxiety', 'Feeling misunderstood']
+            },
+            // Add other systems as needed
+        };
+
+        const traumaTypesList = Object.keys(traumaBrainRegions);
+        const ageRanges = ['0-2', '3-5', '6-8', '9-12', '13-15', '16-18'];
+        const frequencies = ['Once', 'Occasionally', 'Frequently', 'Constantly'];
+        const severities = ['Mild', 'Moderate', 'Severe', 'Extreme'];
+
+        let currentStep = 1;
+        let experiences = [];
+        let protectiveFactors = [];
+        let progress = document.querySelector('.progress');
+
+        function nextStep() {
+            if (currentStep === 1) {
+                const genderSelect = document.getElementById('gender');
+                if (!genderSelect.value) {
+                    alert('Please select your biological sex assigned at birth.');
+                    return;
+                }
+                document.getElementById('step1').classList.add('hidden');
+                document.getElementById('step2').classList.remove('hidden');
+                progress.style.width = '33%';
+                initializeTraumaTypes();
+                currentStep++;
+            }
+        }
+
+        function initializeTraumaTypes() {
+            const traumaTypesDiv = document.getElementById('traumaTypes');
+            traumaTypesDiv.innerHTML = '';
+            traumaTypesList.forEach((trauma, index) => {
+                const traumaDiv = document.createElement('div');
+                traumaDiv.classList.add('trauma-type');
+                traumaDiv.innerHTML = `
+                    <label><input type="checkbox" name="trauma" value="${trauma}"> ${formatTraumaType(trauma)}</label>
+                `;
+                traumaTypesDiv.appendChild(traumaDiv);
+            });
+        }
+
+        function processTraumaSelection() {
+            const selectedTraumas = Array.from(document.querySelectorAll('input[name="trauma"]:checked')).map(el => el.value);
+            if (selectedTraumas.length === 0) {
+                alert('Please select at least one trauma type.');
+                return;
+            }
+            selectedTraumas.forEach(trauma => {
+                if (!experiences.find(exp => exp.trauma_type === trauma)) {
+                    experiences.push({trauma_type: trauma, occurrences: []});
+                }
+            });
+            document.getElementById('step2').classList.add('hidden');
+            progress.style.width = '66%';
+            showOccurrencesForm();
+            currentStep++;
+        }
+
+        function showOccurrencesForm() {
+            const form = document.getElementById('assessmentForm');
+            experiences.forEach((exp, index) => {
+                if (!exp.addedToForm) {
+                    const div = document.createElement('div');
+                    div.classList.add('question', 'occurrence');
+                    div.id = `occurrence${index}`;
+                    let ageOptions = ageRanges.map(age => `
+                        <div class="age-option">
+                            <label><input type="checkbox" name="ageRange${index}" value="${age}" onchange="toggleFrequencySeverity(${index}, '${age}')"> ${age}</label>
+                            <div id="freqSev${index}_${age}" class="freq-sev hidden">
+                                <label for="frequency${index}_${age}">Frequency:</label>
+                                <select id="frequency${index}_${age}">
+                                    <option value="" disabled selected>Select frequency</option>
+                                    ${frequencies.map(freq => `<option value="${freq}">${freq}</option>`).join('')}
+                                </select>
+                                <label for="severity${index}_${age}">Severity:</label>
+                                <select id="severity${index}_${age}">
+                                    <option value="" disabled selected>Select severity</option>
+                                    ${severities.map(sev => `<option value="${sev}">${sev}</option>`).join('')}
+                                </select>
+                            </div>
+                        </div>
+                    `).join('');
+                    div.innerHTML = `
+                        <h3>${formatTraumaType(exp.trauma_type)}</h3>
+                        <div class="age-range-selection">
+                            ${ageOptions}
+                        </div>
+                        <button type="button" class="button" onclick="saveOccurrences(${index})" style="float: right;">Save Occurrences</button>
+                    `;
+                    form.insertBefore(div, document.getElementById('step3'));
+                    exp.addedToForm = true;
+                }
+            });
+        }
+
+        function toggleFrequencySeverity(index, age) {
+            const checkbox = document.querySelector(`input[name="ageRange${index}"][value="${age}"]`);
+            const freqSevDiv = document.getElementById(`freqSev${index}_${age}`);
+            if (checkbox.checked) {
+                freqSevDiv.classList.remove('hidden');
+            } else {
+                freqSevDiv.classList.add('hidden');
+            }
+        }
+
+        function saveOccurrences(index) {
+            const ageCheckboxes = document.querySelectorAll(`input[name="ageRange${index}"]:checked`);
+            if (ageCheckboxes.length === 0) {
+                alert('Please select at least one age range and specify frequency and severity.');
+                return;
+            }
+            let allValid = true;
+            ageCheckboxes.forEach(checkbox => {
+                const age = checkbox.value;
+                const frequency = document.getElementById(`frequency${index}_${age}`).value;
+                const severity = document.getElementById(`severity${index}_${age}`).value;
+                if (!frequency || !severity) {
+                    alert(`Please select frequency and severity for age range ${age}.`);
+                    allValid = false;
+                    return;
+                }
+            });
+            if (!allValid) {
+                return;
+            }
+            ageCheckboxes.forEach(checkbox => {
+                const age = checkbox.value;
+                const frequency = document.getElementById(`frequency${index}_${age}`).value;
+                const severity = document.getElementById(`severity${index}_${age}`).value;
+                experiences[index].occurrences.push({
+                    age_range: age,
+                    frequency: frequency,
+                    severity: severity
+                });
+            });
+            const occurrenceDiv = document.getElementById(`occurrence${index}`);
+            occurrenceDiv.classList.add('hidden');
+            if (experiences.every(exp => exp.addedToForm && document.getElementById(`occurrence${experiences.indexOf(exp)}`).classList.contains('hidden'))) {
+                document.getElementById('step3').classList.remove('hidden');
+                progress.style.width = '100%';
+                currentStep++;
+            }
+        }
+
+        function generateReport() {
+            const support = document.getElementById('supportiveAdult').checked;
+            const therapy = document.getElementById('therapy').checked;
+            const coping = document.getElementById('copingSkills').checked;
+            if (support) protectiveFactors.push('supportive_adult');
+            if (therapy) protectiveFactors.push('therapy');
+            if (coping) protectiveFactors.push('coping_skills');
+            analyzeImpacts();
+        }
+
+        function analyzeImpacts() {
+            const gender = document.getElementById('gender').value;
+            let affectedRegions = {};
+            experiences.forEach(exp => {
+                const trauma = exp.trauma_type;
+                exp.occurrences.forEach(occ => {
+                    const age = occ.age_range;
+                    const frequency = occ.frequency;
+                    const severity = occ.severity;
+                    const regions = traumaBrainRegions[trauma][gender][age] || [];
+                    regions.forEach(region => {
+                        let impactScore = affectedRegions[region] || 0;
+                        const frequencyWeight = {'Once': 1, 'Occasionally': 2, 'Frequently': 3, 'Constantly': 4};
+                        const severityWeight = {'Mild': 1, 'Moderate': 2, 'Severe': 3, 'Extreme': 4};
+                        const score = frequencyWeight[frequency] * severityWeight[severity];
+                        affectedRegions[region] = impactScore + score;
+                    });
+                });
+            });
+            Object.keys(affectedRegions).forEach(region => {
+                let score = affectedRegions[region];
+                if (protectiveFactors.includes('supportive_adult')) {
+                    score = Math.max(score - 2, 0);
+                }
+                if (protectiveFactors.includes('therapy')) {
+                    score = Math.max(score - 3, 0);
+                }
+                if (protectiveFactors.includes('coping_skills')) {
+                    score = Math.max(score - 1, 0);
+                }
+                affectedRegions[region] = score;
+            });
+            analyzeSystems(affectedRegions);
+        }
+
+        function analyzeSystems(affectedRegions) {
+            let affectedSystems = {};
+            Object.keys(brainSystems).forEach(system => {
+                const regions = brainSystems[system];
+                let systemScore = 0;
+                regions.forEach(region => {
+                    if (affectedRegions[region]) {
+                        systemScore += affectedRegions[region];
+                    }
+                });
+                if (systemScore > 0) {
+                    affectedSystems[system] = systemScore;
+                }
+            });
+            displayReport(affectedRegions, affectedSystems);
+        }
+
+        function displayReport(affectedRegions, affectedSystems) {
+            const reportDiv = document.getElementById('report');
+            reportDiv.innerHTML = '';
+
+            // Brain Areas Impacted
+            const sortedRegions = Object.entries(affectedRegions).filter(([region, score]) => score > 0).sort((a, b) => b[1] - a[1]);
+            if (sortedRegions.length > 0) {
+                reportDiv.innerHTML += `<h3>Brain Areas Impacted:</h3>`;
+                sortedRegions.forEach(([region, score]) => {
+                    const impact = brainRegionImpacts[region] || 'No data available.';
+                    const regionDiv = document.createElement('div');
+                    regionDiv.classList.add('region');
+                    regionDiv.innerHTML = `
+                        <h4>${formatRegionName(region)} (Impact Score: ${score})</h4>
+                        <p>- ${impact}</p>
+                    `;
+                    reportDiv.appendChild(regionDiv);
+                });
+            }
+
+            // Brain Systems Impacted
+            const sortedSystems = Object.entries(affectedSystems).sort((a, b) => b[1] - a[1]);
+            if (sortedSystems.length > 0) {
+                reportDiv.innerHTML += `<h3>Brain Systems Impacted:</h3>`;
+                sortedSystems.forEach(([system, score]) => {
+                    const impact = systemImpacts[system];
+                    const systemDiv = document.createElement('div');
+                    systemDiv.classList.add('system');
+                    systemDiv.innerHTML = `
+                        <h4>${system} (Impact Score: ${score})</h4>
+                        <p><strong>Neurological Description:</strong> ${impact.neurological_description}</p>
+                        <p><strong>In Simple Terms:</strong> ${impact.simple_description}</p>
+                    `;
+                    reportDiv.appendChild(systemDiv);
+                });
+            }
+
+            // Interpretation
+            if (sortedSystems.length > 0) {
+                reportDiv.innerHTML += `<h3>Interpretation:</h3>`;
+                const interpretationDiv = document.createElement('div');
+                interpretationDiv.classList.add('interpretation');
+                sortedSystems.forEach(([system, score]) => {
+                    const impact = systemImpacts[system];
+                    interpretationDiv.innerHTML += `<p>${impact.simple_description}</p>`;
+                });
+                reportDiv.appendChild(interpretationDiv);
+            }
+
+            // Super Hero Traits
+            if (sortedSystems.length > 0) {
+                reportDiv.innerHTML += `<h3>Super Hero Traits:</h3>`;
+                const superpowersDiv = document.createElement('div');
+                superpowersDiv.classList.add('superpowers');
+                superpowersDiv.innerHTML += `<h4>Superpowers:</h4>`;
+                let superpowersSet = new Set();
+                sortedSystems.forEach(([system, score]) => {
+                    const impact = systemImpacts[system];
+                    impact.superpowers.forEach(sp => superpowersSet.add(sp));
+                });
+                if (superpowersSet.size > 0) {
+                    superpowersDiv.innerHTML += `<ul>${Array.from(superpowersSet).map(sp => `<li>${sp}</li>`).join('')}</ul>`;
+                } else {
+                    superpowersDiv.innerHTML += `<p>No superpowers identified.</p>`;
+                }
+                superpowersDiv.innerHTML += `<h4>Kryptonites:</h4>`;
+                let kryptonitesSet = new Set();
+                sortedSystems.forEach(([system, score]) => {
+                    const impact = systemImpacts[system];
+                    impact.kryptonites.forEach(kr => kryptonitesSet.add(kr));
+                });
+                if (kryptonitesSet.size > 0) {
+                    superpowersDiv.innerHTML += `<ul>${Array.from(kryptonitesSet).map(kr => `<li>${kr}</li>`).join('')}</ul>`;
+                } else {
+                    superpowersDiv.innerHTML += `<p>No kryptonites identified.</p>`;
+                }
+                reportDiv.appendChild(superpowersDiv);
+            }
+
+            if (sortedRegions.length === 0 && sortedSystems.length === 0) {
+                reportDiv.innerHTML = `<h3>No Significant Impacts Identified</h3><p>Based on the information provided, no significant impacts on specific brain regions or systems were identified.</p>`;
+            }
+
+            reportDiv.classList.remove('hidden');
+            document.getElementById('assessmentForm').classList.add('hidden');
+            progress.parentElement.classList.add('hidden');
+            window.scrollTo(0, 0);
+        }
+
+        function formatTraumaType(trauma) {
+            return trauma.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
+        }
+
+        function formatRegionName(region) {
+            return region.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
+        }
+    </script>
+</body>
+</html>
