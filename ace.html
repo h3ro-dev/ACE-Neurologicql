@@ -48,7 +48,7 @@
         }
         .button {
             display: inline-block;
-            background: #007aff;
+            background: #0051a8;
             color: #fff;
             padding: 14px 28px;
             text-align: center;
@@ -60,7 +60,7 @@
             cursor: pointer;
         }
         .button:disabled {
-            background: #a1a1aa;
+            background: #444;
             cursor: default;
         }
         .question {
@@ -78,7 +78,7 @@
         }
         .progress {
             height: 4px;
-            background: #007aff;
+            background: #0051a8;
             width: 0%;
             transition: width 0.3s ease;
         }
@@ -103,7 +103,7 @@
         }
         .note {
             font-size: 14px;
-            color: #6e6e73;
+            color: #333;
             margin-top: 20px;
         }
         .logo {
@@ -141,8 +141,9 @@
 </head>
 <body>
     <div class="container">
-        <svg class="logo" viewBox="0 0 100 100">
-            <path d="M50 10c-15 0-28 13-28 28s13 28 28 28 28-13 28-28S65 10 50 10z" fill="#007aff"/>
+        <svg class="logo" viewBox="0 0 100 100" role="img" aria-label="ACE Neurologic Assessment logo">
+            <title>ACE Neurologic Assessment Logo</title>
+            <path d="M50 10c-15 0-28 13-28 28s13 28 28 28 28-13 28-28S65 10 50 10z" fill="#0051a8"/>
         </svg>
         <h1>ACEs Brain Impact Assessment</h1>
         <h2>Understand how experiences shape development</h2>
@@ -157,12 +158,12 @@
                     <option value="male">Male</option>
                     <option value="female">Female</option>
                 </select>
-                <button type="button" class="button" onclick="nextStep()">Next</button>
+                <button type="button" class="button" onclick="nextStep()" aria-label="Next step">Next</button>
             </div>
             <div id="step2" class="question hidden">
                 <label>Trauma Types Experienced:</label>
                 <div id="traumaTypes"></div>
-                <button type="button" class="button" onclick="processTraumaSelection()" style="float: right;">Next</button>
+                <button type="button" class="button" onclick="processTraumaSelection()" style="float: right;" aria-label="Next step">Next</button>
             </div>
             <div id="step3" class="question hidden">
                 <label>Protective Factors:</label>
@@ -171,6 +172,7 @@
                 <label><input type="checkbox" id="supportiveAdult"> Had a supportive adult or mentor</label>
                 <label><input type="checkbox" id="therapy"> Received counseling or therapy</label>
                 <label><input type="checkbox" id="copingSkills"> Engage in activities that help cope with stress</label>
+                <button type="button" class="button" onclick="generateReport()" aria-label="Generate report">Generate Report</button>
                 <label><input type="checkbox" id="supportiveSchool"> Supportive school environment</label>
                 <label><input type="checkbox" id="peerRelationships"> Positive peer relationships</label>
                 <button type="button" class="button" onclick="generateReport()">Generate Report</button>
@@ -594,7 +596,7 @@
                         <div class="age-range-selection">
                             ${ageOptions}
                         </div>
-                        <button type="button" class="button" onclick="saveOccurrences(${index})" style="float: right;">Save Occurrences</button>
+                        <button type="button" class="button" onclick="saveOccurrences(${index})" style="float: right;" aria-label="Save occurrences">Save Occurrences</button>
                     `;
                     form.insertBefore(div, document.getElementById('step3'));
                     exp.addedToForm = true;
