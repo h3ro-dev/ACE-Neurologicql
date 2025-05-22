@@ -186,13 +186,15 @@
                 'male': {
                     '6-8': ['prefrontal_cortex', 'amygdala'],
                     '9-12': ['prefrontal_cortex', 'hippocampus'],
-                    '13-15': ['prefrontal_cortex', 'striatum'],
+                    // Adolescent males may exhibit heightened threat sensitivity in the amygdala
+                    '13-15': ['prefrontal_cortex', 'striatum', 'amygdala'],
                     '16-18': ['prefrontal_cortex', 'default_mode_network']
                 },
                 'female': {
                     '6-8': ['prefrontal_cortex', 'amygdala'],
-                    '9-12': ['prefrontal_cortex', 'hippocampus'],
-                    '13-15': ['prefrontal_cortex', 'striatum'],
+                    // Peer rejection in early adolescence can strongly affect the amygdala in girls
+                    '9-12': ['prefrontal_cortex', 'hippocampus', 'amygdala'],
+                    '13-15': ['prefrontal_cortex', 'striatum', 'amygdala'],
                     '16-18': ['prefrontal_cortex', 'default_mode_network']
                 }
             },
@@ -202,15 +204,17 @@
                     '3-5': ['amygdala', 'brainstem'],
                     '6-8': ['prefrontal_cortex', 'amygdala'],
                     '9-12': ['prefrontal_cortex', 'hippocampus'],
-                    '13-15': ['prefrontal_cortex', 'striatum'],
+                    // Exposure to violence in teen boys impacts reward and fear circuits
+                    '13-15': ['prefrontal_cortex', 'striatum', 'amygdala'],
                     '16-18': ['prefrontal_cortex', 'default_mode_network']
                 },
                 'female': {
                     '0-2': ['amygdala', 'hypothalamus'],
                     '3-5': ['amygdala', 'brainstem'],
                     '6-8': ['prefrontal_cortex', 'amygdala'],
-                    '9-12': ['prefrontal_cortex', 'hippocampus'],
-                    '13-15': ['prefrontal_cortex', 'striatum'],
+                    // Girls may show stronger amygdala responses to community trauma in preadolescence
+                    '9-12': ['prefrontal_cortex', 'hippocampus', 'amygdala'],
+                    '13-15': ['prefrontal_cortex', 'striatum', 'amygdala'],
                     '16-18': ['prefrontal_cortex', 'default_mode_network']
                 }
             },
@@ -389,8 +393,9 @@
                     '0-2': ['amygdala', 'hippocampus'],
                     '3-5': ['hippocampus', 'limbic_system'],
                     '6-8': ['prefrontal_cortex', 'insula'],
-                    '9-12': ['prefrontal_cortex', 'insula'],
-                    '13-15': ['prefrontal_cortex', 'default_mode_network'],
+                    // Bereavement stress in girls often involves prolonged amygdala activity
+                    '9-12': ['prefrontal_cortex', 'insula', 'amygdala'],
+                    '13-15': ['prefrontal_cortex', 'default_mode_network', 'amygdala'],
                     '16-18': ['prefrontal_cortex']
                 }
             },
@@ -400,7 +405,8 @@
                     '3-5': ['hippocampus', 'limbic_system'],
                     '6-8': ['prefrontal_cortex', 'limbic_system'],
                     '9-12': ['prefrontal_cortex'],
-                    '13-15': ['prefrontal_cortex', 'default_mode_network'],
+                    // Boys in mid-adolescence may display reward-seeking behavior linked to the striatum
+                    '13-15': ['prefrontal_cortex', 'default_mode_network', 'striatum'],
                     '16-18': ['prefrontal_cortex']
                 },
                 'female': {
@@ -408,7 +414,8 @@
                     '3-5': ['hippocampus', 'limbic_system'],
                     '6-8': ['prefrontal_cortex', 'limbic_system'],
                     '9-12': ['prefrontal_cortex'],
-                    '13-15': ['prefrontal_cortex', 'default_mode_network'],
+                    // Girls tend to show greater limbic activation and mood symptoms
+                    '13-15': ['prefrontal_cortex', 'default_mode_network', 'amygdala'],
                     '16-18': ['prefrontal_cortex']
                 }
             }
