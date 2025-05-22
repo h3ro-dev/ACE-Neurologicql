@@ -167,10 +167,15 @@
             </div>
             <div id="step3" class="question hidden">
                 <label>Protective Factors:</label>
+                <!-- Common resilience factors described in child development literature
+                     (e.g., Masten, 2014; Center on the Developing Child at Harvard University) -->
                 <label><input type="checkbox" id="supportiveAdult"> Had a supportive adult or mentor</label>
                 <label><input type="checkbox" id="therapy"> Received counseling or therapy</label>
                 <label><input type="checkbox" id="copingSkills"> Engage in activities that help cope with stress</label>
                 <button type="button" class="button" onclick="generateReport()" aria-label="Generate report">Generate Report</button>
+                <label><input type="checkbox" id="supportiveSchool"> Supportive school environment</label>
+                <label><input type="checkbox" id="peerRelationships"> Positive peer relationships</label>
+                <button type="button" class="button" onclick="generateReport()">Generate Report</button>
             </div>
         </form>
         <div id="report" class="report hidden"></div>
@@ -183,13 +188,15 @@
                 'male': {
                     '6-8': ['prefrontal_cortex', 'amygdala'],
                     '9-12': ['prefrontal_cortex', 'hippocampus'],
-                    '13-15': ['prefrontal_cortex', 'striatum'],
+                    // Adolescent males may exhibit heightened threat sensitivity in the amygdala
+                    '13-15': ['prefrontal_cortex', 'striatum', 'amygdala'],
                     '16-18': ['prefrontal_cortex', 'default_mode_network']
                 },
                 'female': {
                     '6-8': ['prefrontal_cortex', 'amygdala'],
-                    '9-12': ['prefrontal_cortex', 'hippocampus'],
-                    '13-15': ['prefrontal_cortex', 'striatum'],
+                    // Peer rejection in early adolescence can strongly affect the amygdala in girls
+                    '9-12': ['prefrontal_cortex', 'hippocampus', 'amygdala'],
+                    '13-15': ['prefrontal_cortex', 'striatum', 'amygdala'],
                     '16-18': ['prefrontal_cortex', 'default_mode_network']
                 }
             },
@@ -199,15 +206,17 @@
                     '3-5': ['amygdala', 'brainstem'],
                     '6-8': ['prefrontal_cortex', 'amygdala'],
                     '9-12': ['prefrontal_cortex', 'hippocampus'],
-                    '13-15': ['prefrontal_cortex', 'striatum'],
+                    // Exposure to violence in teen boys impacts reward and fear circuits
+                    '13-15': ['prefrontal_cortex', 'striatum', 'amygdala'],
                     '16-18': ['prefrontal_cortex', 'default_mode_network']
                 },
                 'female': {
                     '0-2': ['amygdala', 'hypothalamus'],
                     '3-5': ['amygdala', 'brainstem'],
                     '6-8': ['prefrontal_cortex', 'amygdala'],
-                    '9-12': ['prefrontal_cortex', 'hippocampus'],
-                    '13-15': ['prefrontal_cortex', 'striatum'],
+                    // Girls may show stronger amygdala responses to community trauma in preadolescence
+                    '9-12': ['prefrontal_cortex', 'hippocampus', 'amygdala'],
+                    '13-15': ['prefrontal_cortex', 'striatum', 'amygdala'],
                     '16-18': ['prefrontal_cortex', 'default_mode_network']
                 }
             },
@@ -386,8 +395,9 @@
                     '0-2': ['amygdala', 'hippocampus'],
                     '3-5': ['hippocampus', 'limbic_system'],
                     '6-8': ['prefrontal_cortex', 'insula'],
-                    '9-12': ['prefrontal_cortex', 'insula'],
-                    '13-15': ['prefrontal_cortex', 'default_mode_network'],
+                    // Bereavement stress in girls often involves prolonged amygdala activity
+                    '9-12': ['prefrontal_cortex', 'insula', 'amygdala'],
+                    '13-15': ['prefrontal_cortex', 'default_mode_network', 'amygdala'],
                     '16-18': ['prefrontal_cortex']
                 }
             },
@@ -397,7 +407,8 @@
                     '3-5': ['hippocampus', 'limbic_system'],
                     '6-8': ['prefrontal_cortex', 'limbic_system'],
                     '9-12': ['prefrontal_cortex'],
-                    '13-15': ['prefrontal_cortex', 'default_mode_network'],
+                    // Boys in mid-adolescence may display reward-seeking behavior linked to the striatum
+                    '13-15': ['prefrontal_cortex', 'default_mode_network', 'striatum'],
                     '16-18': ['prefrontal_cortex']
                 },
                 'female': {
@@ -405,7 +416,8 @@
                     '3-5': ['hippocampus', 'limbic_system'],
                     '6-8': ['prefrontal_cortex', 'limbic_system'],
                     '9-12': ['prefrontal_cortex'],
-                    '13-15': ['prefrontal_cortex', 'default_mode_network'],
+                    // Girls tend to show greater limbic activation and mood symptoms
+                    '13-15': ['prefrontal_cortex', 'default_mode_network', 'amygdala'],
                     '16-18': ['prefrontal_cortex']
                 }
             }
@@ -645,9 +657,13 @@
             const support = document.getElementById('supportiveAdult').checked;
             const therapy = document.getElementById('therapy').checked;
             const coping = document.getElementById('copingSkills').checked;
+            const school = document.getElementById('supportiveSchool').checked;
+            const peers = document.getElementById('peerRelationships').checked;
             if (support) protectiveFactors.push('supportive_adult');
             if (therapy) protectiveFactors.push('therapy');
             if (coping) protectiveFactors.push('coping_skills');
+            if (school) protectiveFactors.push('supportive_school');
+            if (peers) protectiveFactors.push('peer_relationships');
             analyzeImpacts();
         }
 
@@ -679,6 +695,12 @@
                     score = Math.max(score - 3, 0);
                 }
                 if (protectiveFactors.includes('coping_skills')) {
+                    score = Math.max(score - 1, 0);
+                }
+                if (protectiveFactors.includes('supportive_school')) {
+                    score = Math.max(score - 1, 0);
+                }
+                if (protectiveFactors.includes('peer_relationships')) {
                     score = Math.max(score - 1, 0);
                 }
                 affectedRegions[region] = score;
