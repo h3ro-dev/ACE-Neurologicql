@@ -182,6 +182,15 @@
         <p class="note">Note: This assessment is for educational purposes and is not a diagnosis. Please consult a healthcare professional for personalized advice.</p>
     </div>
     <script>
+        /*
+         References for the trauma–brain mappings are summarized in
+         REFERENCES.md. Key sources include:
+         - Teicher & Samson (2016) neurobiological consequences of child maltreatment.
+         - McEwen (2007) describing stress effects on the amygdala and hippocampus.
+         - De Bellis & Zisk (2014) on structural brain changes after trauma.
+         - Shonkoff et al. (2012) on toxic stress and HPA axis disruption.
+         - Tottenham (2012) examining amygdala differences after caregiver loss.
+        */
         // Trauma types mapped to brain regions affected by age and gender
         const traumaBrainRegions = {
             'bullying': {
@@ -447,6 +456,10 @@
         };
 
         // Mapping of brain regions to systems
+        // Sources summarized in REFERENCES.md describe how these regions
+        // interact to form networks for emotion, memory, stress response,
+        // executive function, reward, sensory processing, motor control,
+        // and social cognition.
         const brainSystems = {
             'Emotional Regulation System': ['amygdala', 'prefrontal_cortex', 'anterior_cingulate_cortex', 'ventromedial_prefrontal_cortex', 'limbic_system', 'orbitofrontal_cortex'],
             'Memory System': ['hippocampus', 'prefrontal_cortex', 'temporal_lobes'],
