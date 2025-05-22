@@ -847,6 +847,26 @@
         function formatRegionName(region) {
             return region.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
         }
+
+        // Remove a trauma entry and any associated form elements
+        function autoDelete(index) {
+            experiences.splice(index, 1);
+            const el = document.getElementById(`occurrence${index}`);
+            if (el) {
+                el.remove();
+            }
+        }
+
+        // Merge the occurrences from one trauma entry into another
+        function autoMerge(targetIndex, sourceIndex) {
+            if (targetIndex === sourceIndex) return;
+            const target = experiences[targetIndex];
+            const source = experiences[sourceIndex];
+            if (!target || !source) return;
+            if (target.trauma_type !== source.trauma_type) return;
+            target.occurrences = target.occurrences.concat(source.occurrences);
+            autoDelete(sourceIndex);
+        }
     </script>
 </body>
 </html>
