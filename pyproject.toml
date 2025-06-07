@@ -1,0 +1,10 @@
+[project]
+name = "ai-blackened-management"
+version = "0.1.0"
+description = "Minimal AI blackened management system"
+readme = "README.md"
+requires-python = ">=3.8"
+
+[tool.black]
+target-version = ['py39']
+line-length = 88
