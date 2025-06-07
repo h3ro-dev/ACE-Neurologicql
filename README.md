@@ -1,3 +1,16 @@
+<<<<<<< HEAD
+# ACE-Neurologicql
+
+This repository contains materials for the "Enhanced ACEs Impact on Brain Development Assessment" interface.
+
+The repository is organized into communication **channels** to clarify the role of each component:
+
+- `channels/system`: resources that represent the main interface or system components.
+- `channels/user`: space for user-supplied data or resources.
+- `channels/assistant`: a dedicated area for notes or resources used by the assistant (ChatGPT).
+
+Place relevant files or documentation within these folders to keep each channel distinct. The existing `ace.html` file represents the system interface and remains at the project root.
+=======
 # ACE Neurologic Assessment
 
 This repository hosts a simple HTML interface for exploring how adverse childhood experiences can affect brain development. The main assessment logic lives in `ace.html` with supporting styles in `style.css`.
@@ -45,3 +58,4 @@ The setup script installs dependencies, starts background services required by t
 
 This project is part of ongoing research into the relationship between specific childhood traumas and their effects on different brain regions. We are currently validating mappings of trauma types to affected brain areas to better understand potential clinical applications and further improve the assessment tool.
 
+>>>>>>> origin/main
