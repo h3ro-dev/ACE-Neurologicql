@@ -14,7 +14,7 @@ The following changes were made to improve accessibility in accordance with WCAG
 
 # ACE NeurologicQL
 
-This repository contains a simple web-based assessment tool for exploring how adverse childhood experiences (ACEs) may impact neurological development. It includes minimal HTML pages, a CSS stylesheet, a basic test suite, and a `Dockerfile` for running in a container.
+This repository contains a simple web-based assessment tool for exploring how adverse childhood experiences (ACEs) may impact neurological development. It includes minimal HTML pages, a CSS stylesheet, a basic test suite, and a `Dockerfile` for running in a container. The assessment JavaScript also provides `autoDelete` and `autoMerge` helper functions for managing trauma entries.
 
 ## Opening the HTML files
 
