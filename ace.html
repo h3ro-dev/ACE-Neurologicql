@@ -48,7 +48,7 @@
         }
         .button {
             display: inline-block;
-            background: #007aff;
+            background: #0051a8;
             color: #fff;
             padding: 14px 28px;
             text-align: center;
@@ -60,7 +60,7 @@
             cursor: pointer;
         }
         .button:disabled {
-            background: #a1a1aa;
+            background: #444;
             cursor: default;
         }
         .question {
@@ -78,7 +78,7 @@
         }
         .progress {
             height: 4px;
-            background: #007aff;
+            background: #0051a8;
             width: 0%;
             transition: width 0.3s ease;
         }
@@ -103,7 +103,7 @@
         }
         .note {
             font-size: 14px;
-            color: #6e6e73;
+            color: #333;
             margin-top: 20px;
         }
         .logo {
@@ -137,15 +137,29 @@
             background: #fff;
             font-size: 16px;
         }
+        .disclaimer {
+            background: #fffbe6;
+            border-left: 4px solid #ffd324;
+            padding: 12px;
+            margin: 20px 0;
+            font-size: 16px;
+            color: #1d1d1f;
+            line-height: 1.4;
+        }
     </style>
 </head>
 <body>
     <div class="container">
-        <svg class="logo" viewBox="0 0 100 100">
-            <path d="M50 10c-15 0-28 13-28 28s13 28 28 28 28-13 28-28S65 10 50 10z" fill="#007aff"/>
+        <svg class="logo" viewBox="0 0 100 100" role="img" aria-label="ACE Neurologic Assessment logo">
+            <title>ACE Neurologic Assessment Logo</title>
+            <path d="M50 10c-15 0-28 13-28 28s13 28 28 28 28-13 28-28S65 10 50 10z" fill="#0051a8"/>
         </svg>
         <h1>ACEs Brain Impact Assessment</h1>
         <h2>Understand how experiences shape development</h2>
+        <div class="disclaimer" role="alert">
+            <p>This tool is for educational purposes only and does not replace professional mental health care. If you have concerns about your well-being, consult a qualified provider.</p>
+            <p>If you or someone you know is in crisis, call or text <a href="tel:988">988</a> or visit <a href="https://988lifeline.org" target="_blank" rel="noopener">988lifeline.org</a>. Additional resources are available from the <a href="https://www.nami.org/Support-Education" target="_blank" rel="noopener">National Alliance on Mental Illness</a> and the <a href="https://www.nimh.nih.gov/health/find-help" target="_blank" rel="noopener">National Institute of Mental Health</a>.</p>
+        </div>
         <div class="progress-bar">
             <div class="progress"></div>
         </div>
@@ -157,38 +171,54 @@
                     <option value="male">Male</option>
                     <option value="female">Female</option>
                 </select>
-                <button type="button" class="button" onclick="nextStep()">Next</button>
+                <button type="button" class="button" onclick="nextStep()" aria-label="Next step">Next</button>
             </div>
             <div id="step2" class="question hidden">
                 <label>Trauma Types Experienced:</label>
                 <div id="traumaTypes"></div>
-                <button type="button" class="button" onclick="processTraumaSelection()" style="float: right;">Next</button>
+                <button type="button" class="button" onclick="processTraumaSelection()" style="float: right;" aria-label="Next step">Next</button>
             </div>
             <div id="step3" class="question hidden">
                 <label>Protective Factors:</label>
+                <!-- Common resilience factors described in child development literature
+                     (e.g., Masten, 2014; Center on the Developing Child at Harvard University) -->
                 <label><input type="checkbox" id="supportiveAdult"> Had a supportive adult or mentor</label>
                 <label><input type="checkbox" id="therapy"> Received counseling or therapy</label>
                 <label><input type="checkbox" id="copingSkills"> Engage in activities that help cope with stress</label>
+                <button type="button" class="button" onclick="generateReport()" aria-label="Generate report">Generate Report</button>
+                <label><input type="checkbox" id="supportiveSchool"> Supportive school environment</label>
+                <label><input type="checkbox" id="peerRelationships"> Positive peer relationships</label>
                 <button type="button" class="button" onclick="generateReport()">Generate Report</button>
             </div>
         </form>
         <div id="report" class="report hidden"></div>
-        <p class="note">Note: This assessment is for educational purposes and is not a diagnosis. Please consult a healthcare professional for personalized advice.</p>
+        <p class="note">This tool is educational and does not provide a medical diagnosis. For personal guidance, speak with a healthcare professional. If you need immediate help, call or text <a href="tel:988">988</a> or visit <a href="https://988lifeline.org" target="_blank" rel="noopener">988lifeline.org</a>.</p>
     </div>
     <script>
+        /*
+         References for the trauma–brain mappings are summarized in
+         REFERENCES.md. Key sources include:
+         - Teicher & Samson (2016) neurobiological consequences of child maltreatment.
+         - McEwen (2007) describing stress effects on the amygdala and hippocampus.
+         - De Bellis & Zisk (2014) on structural brain changes after trauma.
+         - Shonkoff et al. (2012) on toxic stress and HPA axis disruption.
+         - Tottenham (2012) examining amygdala differences after caregiver loss.
+        */
         // Trauma types mapped to brain regions affected by age and gender
         const traumaBrainRegions = {
             'bullying': {
                 'male': {
                     '6-8': ['prefrontal_cortex', 'amygdala'],
                     '9-12': ['prefrontal_cortex', 'hippocampus'],
-                    '13-15': ['prefrontal_cortex', 'striatum'],
+                    // Adolescent males may exhibit heightened threat sensitivity in the amygdala
+                    '13-15': ['prefrontal_cortex', 'striatum', 'amygdala'],
                     '16-18': ['prefrontal_cortex', 'default_mode_network']
                 },
                 'female': {
                     '6-8': ['prefrontal_cortex', 'amygdala'],
-                    '9-12': ['prefrontal_cortex', 'hippocampus'],
-                    '13-15': ['prefrontal_cortex', 'striatum'],
+                    // Peer rejection in early adolescence can strongly affect the amygdala in girls
+                    '9-12': ['prefrontal_cortex', 'hippocampus', 'amygdala'],
+                    '13-15': ['prefrontal_cortex', 'striatum', 'amygdala'],
                     '16-18': ['prefrontal_cortex', 'default_mode_network']
                 }
             },
@@ -198,15 +228,17 @@
                     '3-5': ['amygdala', 'brainstem'],
                     '6-8': ['prefrontal_cortex', 'amygdala'],
                     '9-12': ['prefrontal_cortex', 'hippocampus'],
-                    '13-15': ['prefrontal_cortex', 'striatum'],
+                    // Exposure to violence in teen boys impacts reward and fear circuits
+                    '13-15': ['prefrontal_cortex', 'striatum', 'amygdala'],
                     '16-18': ['prefrontal_cortex', 'default_mode_network']
                 },
                 'female': {
                     '0-2': ['amygdala', 'hypothalamus'],
                     '3-5': ['amygdala', 'brainstem'],
                     '6-8': ['prefrontal_cortex', 'amygdala'],
-                    '9-12': ['prefrontal_cortex', 'hippocampus'],
-                    '13-15': ['prefrontal_cortex', 'striatum'],
+                    // Girls may show stronger amygdala responses to community trauma in preadolescence
+                    '9-12': ['prefrontal_cortex', 'hippocampus', 'amygdala'],
+                    '13-15': ['prefrontal_cortex', 'striatum', 'amygdala'],
                     '16-18': ['prefrontal_cortex', 'default_mode_network']
                 }
             },
@@ -385,8 +417,9 @@
                     '0-2': ['amygdala', 'hippocampus'],
                     '3-5': ['hippocampus', 'limbic_system'],
                     '6-8': ['prefrontal_cortex', 'insula'],
-                    '9-12': ['prefrontal_cortex', 'insula'],
-                    '13-15': ['prefrontal_cortex', 'default_mode_network'],
+                    // Bereavement stress in girls often involves prolonged amygdala activity
+                    '9-12': ['prefrontal_cortex', 'insula', 'amygdala'],
+                    '13-15': ['prefrontal_cortex', 'default_mode_network', 'amygdala'],
                     '16-18': ['prefrontal_cortex']
                 }
             },
@@ -396,7 +429,8 @@
                     '3-5': ['hippocampus', 'limbic_system'],
                     '6-8': ['prefrontal_cortex', 'limbic_system'],
                     '9-12': ['prefrontal_cortex'],
-                    '13-15': ['prefrontal_cortex', 'default_mode_network'],
+                    // Boys in mid-adolescence may display reward-seeking behavior linked to the striatum
+                    '13-15': ['prefrontal_cortex', 'default_mode_network', 'striatum'],
                     '16-18': ['prefrontal_cortex']
                 },
                 'female': {
@@ -404,7 +438,8 @@
                     '3-5': ['hippocampus', 'limbic_system'],
                     '6-8': ['prefrontal_cortex', 'limbic_system'],
                     '9-12': ['prefrontal_cortex'],
-                    '13-15': ['prefrontal_cortex', 'default_mode_network'],
+                    // Girls tend to show greater limbic activation and mood symptoms
+                    '13-15': ['prefrontal_cortex', 'default_mode_network', 'amygdala'],
                     '16-18': ['prefrontal_cortex']
                 }
             }
@@ -434,6 +469,10 @@
         };
 
         // Mapping of brain regions to systems
+        // Sources summarized in REFERENCES.md describe how these regions
+        // interact to form networks for emotion, memory, stress response,
+        // executive function, reward, sensory processing, motor control,
+        // and social cognition.
         const brainSystems = {
             'Emotional Regulation System': ['amygdala', 'prefrontal_cortex', 'anterior_cingulate_cortex', 'ventromedial_prefrontal_cortex', 'limbic_system', 'orbitofrontal_cortex'],
             'Memory System': ['hippocampus', 'prefrontal_cortex', 'temporal_lobes'],
@@ -583,7 +622,7 @@
                         <div class="age-range-selection">
                             ${ageOptions}
                         </div>
-                        <button type="button" class="button" onclick="saveOccurrences(${index})" style="float: right;">Save Occurrences</button>
+                        <button type="button" class="button" onclick="saveOccurrences(${index})" style="float: right;" aria-label="Save occurrences">Save Occurrences</button>
                     `;
                     form.insertBefore(div, document.getElementById('step3'));
                     exp.addedToForm = true;
@@ -644,9 +683,13 @@
             const support = document.getElementById('supportiveAdult').checked;
             const therapy = document.getElementById('therapy').checked;
             const coping = document.getElementById('copingSkills').checked;
+            const school = document.getElementById('supportiveSchool').checked;
+            const peers = document.getElementById('peerRelationships').checked;
             if (support) protectiveFactors.push('supportive_adult');
             if (therapy) protectiveFactors.push('therapy');
             if (coping) protectiveFactors.push('coping_skills');
+            if (school) protectiveFactors.push('supportive_school');
+            if (peers) protectiveFactors.push('peer_relationships');
             analyzeImpacts();
         }
 
@@ -678,6 +721,12 @@
                     score = Math.max(score - 3, 0);
                 }
                 if (protectiveFactors.includes('coping_skills')) {
+                    score = Math.max(score - 1, 0);
+                }
+                if (protectiveFactors.includes('supportive_school')) {
+                    score = Math.max(score - 1, 0);
+                }
+                if (protectiveFactors.includes('peer_relationships')) {
                     score = Math.max(score - 1, 0);
                 }
                 affectedRegions[region] = score;
@@ -797,6 +846,26 @@
 
         function formatRegionName(region) {
             return region.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
+        }
+
+        // Remove a trauma entry and any associated form elements
+        function autoDelete(index) {
+            experiences.splice(index, 1);
+            const el = document.getElementById(`occurrence${index}`);
+            if (el) {
+                el.remove();
+            }
+        }
+
+        // Merge the occurrences from one trauma entry into another
+        function autoMerge(targetIndex, sourceIndex) {
+            if (targetIndex === sourceIndex) return;
+            const target = experiences[targetIndex];
+            const source = experiences[sourceIndex];
+            if (!target || !source) return;
+            if (target.trauma_type !== source.trauma_type) return;
+            target.occurrences = target.occurrences.concat(source.occurrences);
+            autoDelete(sourceIndex);
         }
     </script>
 </body>
